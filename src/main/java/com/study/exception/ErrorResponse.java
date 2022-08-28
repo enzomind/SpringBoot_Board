@@ -15,7 +15,7 @@ public class ErrorResponse { //이 클래스는 ErrorCode를 통한 객체 생�
 
     public ErrorResponse(ErrorCode errorCode) {
         this.status = errorCode.getStatus().value();
-        this.error=errorCode.getStatus().name();
+        this.error = errorCode.getStatus().name();
         this.code = errorCode.name();
         this.message = errorCode.getMessage();
     }

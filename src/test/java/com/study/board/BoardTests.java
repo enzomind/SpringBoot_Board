@@ -47,7 +47,7 @@ public class BoardTests {
     @Test
     void delete() {
 
-        Board entity = boardRepository.findById((long)1).get(); //게시글 조회
+        Board entity = boardRepository.findById((long)2).get(); //게시글 조회
         //findById()의 리턴타입은 Optional<T> 라는 클래스
 
 
