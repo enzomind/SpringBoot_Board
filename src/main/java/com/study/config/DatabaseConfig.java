@@ -25,5 +25,8 @@ public class DatabaseConfig {
     public DataSource dataSource() {
         return new HikariDataSource(hikariConfig());
     }
+    //데이터 소스 객체를 생성.
+    //SQL을 실행할때마다 커넥션 맺고 끊는 I/O작업을 하는데 리소스가 상당하기때문에 커넥션 풀을 사용.
+    //커넥션 객체를 생성해두고 DB에 접근하는 사용자에게 미리 생성해둔 커넥션을 제공했다가 돌려받는 방법.
 
 }
