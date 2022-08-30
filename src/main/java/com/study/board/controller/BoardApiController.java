@@ -18,18 +18,19 @@ import java.util.List;
 public class BoardApiController {
     private final BoardService boardService;
 
-    @PostMapping("/boards")
+    @PostMapping("/boards") //게시글 생성
     public Long save(@RequestBody final BoardRequestDto params) {
         return boardService.save(params);
+
     }
 
-    @GetMapping("/boards")
+    @GetMapping("/boards") //게시글 리스트 조회
     public List<BoardResponseDto> findAll() {
         return boardService.findAll();
     }
 
-    @PatchMapping("/boards/{id}")
-    public Long save(@PathVariable final Long id, @RequestBody final BoardRequestDto params) {
+    @PatchMapping("/boards/{id}") //게시글 수정
+    public Long update(@PathVariable final Long id, @RequestBody final BoardRequestDto params) {
         return boardService.update(id, params);
     }
 
@@ -40,6 +41,16 @@ public class BoardApiController {
 //        throw new CustomException(ErrorCode.POSTS_NOT_FOUND);
 //        // 예외에 대한 응답이 어떤 흐름으로 처리되는지 확인차원에서 메서드 실행 시, 강제로 CustomException 발생시키게 변경.
 //    }
+
+    @DeleteMapping("/boards/{id}") //삭제
+    public Long delete(@PathVariable final Long id) {
+        return boardService.delete(id);
+    }
+
+    @GetMapping("/boards/{id}")
+    public BoardResponseDto findById(@PathVariable final Long id) {
+        return boardService.findById(id);
+    }
 
 
 }

@@ -13,7 +13,7 @@
             <option value="content">내용</option>
             <option value="writer">작성자</option>
         </select>
-        <input type="text" id="searchKeyword" class="form-control" placeholder="키워드를 입력해 주세요." style="width: 300px;" />
+        <input type="text" id="searchKeyword" class="form-control" placeholder="키워드를 입력해 주세요." style="width: 300px;"/>
         <button type="button" class="btn btn-primary">
             <span aria-hidden="true" class="glyphicon glyphicon-search"></span>
         </button>
@@ -50,11 +50,52 @@
 
 
 <th:block layout:fragment="script">
-    <script th:inline="javascript"> <!-- 스크립트에서 타임리프 문법 사용하기위해서 선언 필요 -->
+    <script th:inline="javascript">
+        // 스크립트에서 타임리프 문법 사용하기위해서 선언 필요
         /*<![CDATA[*/
+        // 스크립트의 시작과 끝 태그를 CDATA로 묶어줘야 함.
 
-        <!--스크립트의 시작과 끝 태그를 CDATA로 묶어줘야 함.-->
+        window.onload = () => {
+            findAll();
+        } //페이지 로딩 시점에 실행되는 함수
 
+        //게시글 리스트 조회 구현
+        function findAll() {
+            fetch('/api/boards').then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+            }).then(json => {
+                let html = '';
+                //let : 블록 스코프의 범위를 가지는 지역 변수
+
+                if (!json.length) {
+                    html = '<td colspan="5">등록된 게시글이 없습니다.</td>';
+                } else {
+                    json.forEach((obj, idx) => {
+                        html += `
+                        <tr>
+    							<td>${json.length - idx}</td>
+    							<td class="text-left">
+    								<a href="javascript: void(0);" onclick="goView(${obj.id})">${obj.title}</a>
+    							</td>
+    							<td>${obj.writer}</td>
+    							<td>${moment(obj.createdDate).format('YYYY-MM-DD HH:mm:ss')}</td>
+    							<td>${obj.hits}</td>
+							</tr>
+						`;
+                    });
+                }
+
+                document.getElementById('list').innerHTML = html;
+                //list에 innerHTML을 써서 갱신 및 출력하게하기위함.
+            });
+        }
+
+        // 게시글 조회
+        function goView(id) {
+            location.href = `/board/view/${id}`;
+        }
 
         /*]]>*/
     </script>

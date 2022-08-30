@@ -60,7 +60,7 @@ public class BoardService {
 //        return boardList;
 //    }
 
-    @Transactional //안써서 업데이트 오류났었음. 정신차릴것
+    @Transactional //안써서 업데이트 때, 오류났었음. 정신차릴것
     public Long update(final Long id, final BoardRequestDto params) {
         Board entity = boardRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
         //orElseThrow()는 Optional 클래스에 포함된 메서드로, Entity 조회와 예외처리를 한 줄로 처리할 수 있음.
@@ -92,4 +92,21 @@ public class BoardService {
 //    }
 
 
+    @Transactional
+    public Long delete(final Long id) {
+
+        Board entity = boardRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
+        entity.delete();
+
+        return id;
+    }
+
+    @Transactional
+    public BoardResponseDto findById(final Long id) {
+        Board entity = boardRepository.findById(id).orElseThrow(() -> new CustomException(ErrorCode.POSTS_NOT_FOUND));
+
+        entity.increaseHits();
+        return new BoardResponseDto(entity);
+
+    }
 }

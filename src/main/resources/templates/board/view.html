@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<th:block layout:fragment="content">
+    <div class="card-content">
+        <form class="form-horizontal form-view">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">제목</label>
+                <div class="col-sm-10"><p id="title" class="form-control"></p></div>
+                <!-- form-group 클래스가 지정된 div 두번째 자식 요소 -->
+                <!-- 각각의 p태그에 id값들이 세팅되어있는데 자바스크립트 함수로 id값 기준으로 렌더링할 것 -->
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">이름</label>
+                <div class="col-sm-10"><p id="writer" class="form-control"></p></div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">내용</label>
+                <div class="col-sm-10"><p id="content" class="form-control"></p></div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">등록일</label>
+                <div class="col-sm-10"><p id="createdDate" class="form-control"></p></div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">조회 수</label>
+                <div class="col-sm-10"><p id="hits" class="form-control"></p></div>
+            </div>
+        </form>
+
+        <div class="btn_wrap text-center">
+            <a href="javascript: void(0);" onclick="goList();" class="btn btn-default waves-effect waves-light">뒤로가기</a>
+            <a href="javascript: void(0);" onclick="goWrite();"
+               class="btn btn-primary waves-effect waves-light">수정하기</a>
+            <button type="button" onclick="deleteBoard();" class="btn btn-danger waves-effect waves-light">삭제하기</button>
+        </div>
+    </div>
+    <!-- /.card-content -->
+</th:block>
+
+<th:block layout.fragment="script">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+
+        window.onload = () => {
+            findBoard();
+        }
+
+        /* 게시글 조회 */
+
+        function findBoard() { //컨트롤러에서 전달받은 게시글 번호(id)를 이용해 게시글 조회
+            const id = /*[[ ${id} ]]*/;
+
+            fetch(`/api/boards/${id}`).then(response => {
+                if (!response.ok) {
+                    throw new Error('Request failed...');
+                }
+                return response.json();
+
+            }).then(json => {
+                console.table(json);
+                json.createdDate = moment(json.createdDate).format('YYYY-MM-DD HH:mm:ss');
+                //json에 담겨있던 createdDate의 포맷을 변경
+
+                Object.keys(json).forEach(key => {
+                    //Object.keys() 함수를 이용하면 객체에 담겨있는 모든 프로퍼티의 Key값을 배열로 리턴해줌.
+                    const elem = document.getElementById(key);
+                    if (elem) {
+                        elem.innerText = json[key];
+                    }
+                });
+
+                // 여기서부터 킹직히 이해가 안됨
+                //각각의 Key는 id부터 modifiedDate까지 게시판 테이블의 모든 컬럼을 포함하고있는데
+                //elem 이란 변수에 id값이 지정된 p태그를 저장하고 엘리먼트가 있는 경우,
+                //해당 엘리먼트의 텍스트를 json[key]로 렌더링해줌.
+
+                //위 코드를 통해 아래와 같이 각각의 엘리먼트에 접근해 값을 렌더링하지 않아도 됨. 이라고 하는데 이해가안되네..
+                // document.getElementById('title').innerText = json.title;
+                // document.getElementById('content').innerText = json.content;
+                // document.getElementById('writer').innerText = json.writer;
+                // document.getElementById('createdDate').innerText = json.createdDate;
+                // document.getElementById('hits').innerText = json.hits;
+
+            }).catch(error => {
+                alert('게시글 정보를 찾을 수 없습니다.');
+                goList();
+            });
+        }
+
+        // 뒤로가기
+        function goList() {
+            location.href = '/board/list';
+        }
+
+        // 수정하기
+        function goWrite() {
+            location.href = '/board/write?id=[[${id}]]';
+        }
+
+        // 삭제하기
+        function deleteBoard() {
+            const id = /*[[ ${id} ]]*/;
+
+            if (!confirm('$(id)번 게시글을 삭제할까요?')) {
+                return false;
+            }
+
+            fetch('/api/boards/${id}', {
+                method: 'DELETE',
+                headers: {'Content-Type': 'application/json'},
+            }).then(response => {
+                if (!response.ok) {const id = /*[[ ${id} ]]*/;
+
+                    fetch(`/api/boards/${id}`).then(response => {
+                        if (!response.ok) {
+                            throw new Error('Request failed...');
+                        }
+                        return response.json();
+
+                    }).then(json => {
+                        console.table(json);
+                        json.createdDate = moment(json.createdDate).format('YYYY-MM-DD HH:mm:ss');const id = /*[[ ${id} ]]*/;
+
+                        fetch(`/api/boards/${id}`).then(response => {
+                            if (!response.ok) {
+                                throw new Error('Request failed...');
+                            }
+                            return response.json();
+
+                        }).then(json => {
+                            console.table(json);
+                            json.createdDate = moment(json.createdDate).format('YYYY-MM-DD HH:mm:ss');const id = /*[[ ${id} ]]*/;
+
+                            fetch(`/api/boards/${id}`).then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Request failed...');
+                                }
+                                return response.json();
+
+                            }).then(json => {
+                                console.table(json);
+                                json.createdDate = moment(json.createdDate).format('YYYY-MM-DD HH:mm:ss');
+                    throw new Error('Request Failed...');
+                }
+
+                alert('삭제되었습니다.');
+                goList();
+
+            }).catch(error => {
+                alert('오류가 발생하였습니다.');
+            });
+        }
+
+        /*]]>*/
+    </script>
+</th:block>
+
+
+</html>

@@ -6,109 +6,147 @@
       layout:decorate="~{layout}">
 
 <th:block layout:fragment="content">
-  <div class="card-content">
-    <form id="form" class="form-horizontal">
-      <div class="form-group">
-        <label for="title" class="col-sm-2 control-label">제목</label>
-        <div class="col-sm-10">
-          <input type="text" id="title" class="form-control" placeholder="제목을 입력해 주세요." />
-        </div>
-      </div>
+    <div class="card-content">
+        <form id="form" class="form-horizontal">
+            <div class="form-group">
+                <label for="title" class="col-sm-2 control-label">제목</label>
+                <div class="col-sm-10">
+                    <input type="text" id="title" class="form-control" placeholder="제목을 입력해 주세요."/>
+                </div>
+            </div>
 
-      <div class="form-group">
-        <label for="writer" class="col-sm-2 control-label">이름</label>
-        <div class="col-sm-10">
-          <input type="text" id="writer" class="form-control" placeholder="이름을 입력해 주세요." />
-        </div>
-      </div>
+            <div class="form-group">
+                <label for="writer" class="col-sm-2 control-label">이름</label>
+                <div class="col-sm-10">
+                    <input type="text" id="writer" class="form-control" placeholder="이름을 입력해 주세요."/>
+                </div>
+            </div>
 
-      <div class="form-group">
-        <label for="content" class="col-sm-2 control-label">내용</label>
-        <div class="col-sm-10">
-          <textarea id="content" class="form-control" placeholder="내용을 입력해 주세요."></textarea>
-        </div>
-      </div>
+            <div class="form-group">
+                <label for="content" class="col-sm-2 control-label">내용</label>
+                <div class="col-sm-10">
+                    <textarea id="content" class="form-control" placeholder="내용을 입력해 주세요."></textarea>
+                </div>
+            </div>
 
-      <div class="btn_wrap text-center">
-        <a th:href="@{/board/list}" class="btn btn-default waves-effect waves-light">뒤로가기</a>
-        <button type="button" onclick="save();" class="btn btn-primary waves-effect waves-light">저장하기</button>
-      </div>
-    </form>
-  </div>
+            <div class="btn_wrap text-center">
+                <a th:href="@{/board/list}" class="btn btn-default waves-effect waves-light">뒤로가기</a>
+                <button type="button" onclick="save();" class="btn btn-primary waves-effect waves-light">저장하기</button>
+            </div>
+        </form>
+    </div>
 </th:block>
 
 
 <th:block layout:fragment="script">
-  <script th:inline="javascript">
+    <script th:inline="javascript">
 
-    function isValid() { //유효성 검사 함수
+        /*<![CDATA[*/
 
-      const form = document.getElementById('form');
+        window.onload = () => {
+            findBoard();
+        }
 
-      if(!form.title.value.trim()) {
-        alert('제목을 입력해 주세요.');
-        form.title.value = '';
-        form.title.focus();
-        return false;
-      }
+        //게시글 조회
+        function findBoard() {
 
-      if (!form.writer.value.trim()) {
-        alert('작성자를 입력해 주세요.');
-        form.writer.value = '';
-        form.writer.focus();
-        return false;
-      }
+            const id = /*[[ ${id} ]]*/;
 
-      if (!form.content.value.trim()) {
-        alert('내용을 입력해 주세요');
-        form.content.value = '';
-        form.content.focus();
-        return false;
-      }
+            if (!id) {
+                return false;
+            }
 
-      return true;
-    }
+            fetch(`/api/boards/${id}`).then(response => {
+                if (!response.ok) {
+                    throw new Error('Request failed...');
+                }
+                return response.json();
+
+            }).then(json => {
+                const form = document.getElementById('form');
+                form.title.value = json.title;
+                form.content.value = json.content;
+                form.writer.value = json.writer;
+
+            }).catch(error => {
+                alert('게시글 정보를 찾을 수 없습니다.');
+                location.href = '/board/list';
+            });
+        }
+
+        //유효성 검사
+        function isValid() { //유효성 검사 함수
+
+            const form = document.getElementById('form');
+
+            if (!form.title.value.trim()) {
+                alert('제목을 입력해 주세요.');
+                form.title.value = '';
+                form.title.focus();
+                return false;
+            }
+
+            if (!form.writer.value.trim()) {
+                alert('작성자를 입력해 주세요.');
+                form.writer.value = '';
+                form.writer.focus();
+                return false;
+            }
+
+            if (!form.content.value.trim()) {
+                alert('내용을 입력해 주세요');
+                form.content.value = '';
+                form.content.focus();
+                return false;
+            }
+
+            return true;
+        }
+
+        // 게시글 등록(생성/수정)
+        function save() { //게시글 등록(생성)을 처리하는 함수
+            if (!isValid()) {
+                return false;
+            }
+            //isValid 함수를 실행시켜 false를 리턴받은 경우 로직 종료
 
 
-    function save() { //게시글 등록(생성)을 처리하는 함수
-      if (!isValid()) {
-        return false;
-      }
-      //isValid 함수를 실행시켜 false를 리턴받은 경우 로직 종료
+            const form = document.getElementById('form');
+            //폼안에 있는 제목, 작성자, 내용에 접근하기 위한 엘리먼트
+            const params = {
+                title: form.title.value,
+                writer: form.writer.value,
+                content: form.content.value,
+                deleteYn: 'N'
+            };
+            //params 변수는 title, writer, content, deleteYn 데이터를 전달하기 위한 객체
 
+            const id = /*[[${id}]]*/; //변경할 수 없는 값 const 상수
+            const uri = (id) ? '/api/boards/${id}' : '/api/boards';
+            const method = (id) ? 'PATCH' : 'POST';
 
-      const form = document.getElementById('form');
-      //폼안에 있는 제목, 작성자, 내용에 접근하기 위한 엘리먼트
-      const params = {
-        title: form.title.value,
-        writer: form.writer.value,
-        content : form.content.value,
-        deleteYn: 'N'
-      };
-      //params 변수는 title, writer, content, deleteYn 데이터를 전달하기 위한 객체
+            fetch(uri, { //위 const 상수 설정으로 소스 수정됨. 0830
+                method: method, //데이터 생성(Create)은 무조건 POST 방식
+                headers: { //API호출 시, GET방식이 아닌 요청은 content-type을 json으로 설정
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(params)
+                //데이터 전달에 사용되는 '옵션'으로 params 객체에 담긴 게시글 정보를 API서버로 전달
 
-      fetch('/api/boards', {
-        method: 'POST', //데이터 생성(Create)은 무조건 POST 방식
-        headers: { //API호출 시, GET방식이 아닌 요청은 content-type을 json으로 설정
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(params)
-        //데이터 전달에 사용되는 '옵션'으로 params 객체에 담긴 게시글 정보를 API서버로 전달
+            }).then(response => { //findall()과 마찬가지로 response는 Promise 객체
+                if (!response.ok) { //딱봐도 게시글 생성에 실패했을 경우 나오는 부분같아보임
+                    throw new Error('Reqeust Failed...');
+                } //try/catch와 동일한 기능으로 보여짐.
 
-      }).then(response => { //findall()과 마찬가지로 response는 Promise 객체
-        if (!response.ok) { //딱봐도 게시글 생성에 실패했을 경우 나오는 부분같아보임
-          throw new Error('Reqeust failed...');
-        } //try/catch와 동일한 기능으로 보여짐.
+                alert('저장되었습니다.');
+                location.href = '/board/list';
+            }).catch(error => {
+                alert('오류가 발생하였습니다.');
+            });
 
-        alert('저장되었습니다.');
-        location.href = '/board/list';
-      }).catch(error => {
-        alert('오류가 발생하였습니다.');
-      });
+        }
 
-    }
-
-  </script>
+    </script>
 </th:block>
 
 </html>
