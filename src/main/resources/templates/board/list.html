@@ -61,7 +61,7 @@
 
         //게시글 리스트 조회 구현
         function findAll() {
-            fetch('/api/boards').then(response => {
+            fetch('/api/boards?deleteYn=N').then(response => { //DeleteYn=N <- 쿼리 스트링
                 if (response.ok) {
                     return response.json();
                 }

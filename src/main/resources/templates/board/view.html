@@ -45,7 +45,7 @@
     <!-- /.card-content -->
 </th:block>
 
-<th:block layout.fragment="script">
+<th:block layout:fragment="script"> <!-- 정신차리자... layout.fragment 로 써서 삽질을 2시간이나했다. -->
     <script th:inline="javascript">
         /*<![CDATA[*/
 
@@ -54,7 +54,6 @@
         }
 
         /* 게시글 조회 */
-
         function findBoard() { //컨트롤러에서 전달받은 게시글 번호(id)를 이용해 게시글 조회
             const id = /*[[ ${id} ]]*/;
 
@@ -107,48 +106,20 @@
 
         // 삭제하기
         function deleteBoard() {
-            const id = /*[[ ${id} ]]*/;
 
-            if (!confirm('$(id)번 게시글을 삭제할까요?')) {
+            const id = [[ ${id} ]];
+
+            if ( !confirm(`${id}번 게시글을 삭제할까요?`) ) {
                 return false;
             }
 
-            fetch('/api/boards/${id}', {
+            fetch(`/api/boards/${id}`, {
                 method: 'DELETE',
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
+
             }).then(response => {
-                if (!response.ok) {const id = /*[[ ${id} ]]*/;
-
-                    fetch(`/api/boards/${id}`).then(response => {
-                        if (!response.ok) {
-                            throw new Error('Request failed...');
-                        }
-                        return response.json();
-
-                    }).then(json => {
-                        console.table(json);
-                        json.createdDate = moment(json.createdDate).format('YYYY-MM-DD HH:mm:ss');const id = /*[[ ${id} ]]*/;
-
-                        fetch(`/api/boards/${id}`).then(response => {
-                            if (!response.ok) {
-                                throw new Error('Request failed...');
-                            }
-                            return response.json();
-
-                        }).then(json => {
-                            console.table(json);
-                            json.createdDate = moment(json.createdDate).format('YYYY-MM-DD HH:mm:ss');const id = /*[[ ${id} ]]*/;
-
-                            fetch(`/api/boards/${id}`).then(response => {
-                                if (!response.ok) {
-                                    throw new Error('Request failed...');
-                                }
-                                return response.json();
-
-                            }).then(json => {
-                                console.table(json);
-                                json.createdDate = moment(json.createdDate).format('YYYY-MM-DD HH:mm:ss');
-                    throw new Error('Request Failed...');
+                if (!response.ok) {
+                    throw new Error('Request failed...');
                 }
 
                 alert('삭제되었습니다.');
@@ -162,6 +133,5 @@
         /*]]>*/
     </script>
 </th:block>
-
 
 </html>

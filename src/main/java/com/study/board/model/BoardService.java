@@ -107,6 +107,11 @@ public class BoardService {
 
         entity.increaseHits();
         return new BoardResponseDto(entity);
+    }
 
+    public List<BoardResponseDto> findAllByDeleteYn(final char deleteYn) {
+        Sort sort = Sort.by(Direction.DESC, "id", "createdDate");
+        List<Board> list = boardRepository.findAllByDeleteYn(deleteYn, sort);
+        return list.stream().map(BoardResponseDto::new).collect(Collectors.toList());
     }
 }

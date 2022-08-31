@@ -25,8 +25,9 @@ public class BoardApiController {
     }
 
     @GetMapping("/boards") //게시글 리스트 조회
-    public List<BoardResponseDto> findAll() {
-        return boardService.findAll();
+    public List<BoardResponseDto> findAll(@RequestParam final char deleteYn) {
+        return boardService.findAllByDeleteYn(deleteYn);
+        //전달받은 파라미터로 BoardService의 findAllByDeleteYn을 호출
     }
 
     @PatchMapping("/boards/{id}") //게시글 수정

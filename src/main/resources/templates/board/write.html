@@ -11,14 +11,14 @@
             <div class="form-group">
                 <label for="title" class="col-sm-2 control-label">제목</label>
                 <div class="col-sm-10">
-                    <input type="text" id="title" class="form-control" placeholder="제목을 입력해 주세요."/>
+                    <input type="text" id="title" class="form-control" placeholder="제목을 입력해 주세요." />
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="writer" class="col-sm-2 control-label">이름</label>
                 <div class="col-sm-10">
-                    <input type="text" id="writer" class="form-control" placeholder="이름을 입력해 주세요."/>
+                    <input type="text" id="writer" class="form-control" placeholder="이름을 입력해 주세요." />
                 </div>
             </div>
 
@@ -122,7 +122,8 @@
             //params 변수는 title, writer, content, deleteYn 데이터를 전달하기 위한 객체
 
             const id = /*[[${id}]]*/; //변경할 수 없는 값 const 상수
-            const uri = (id) ? '/api/boards/${id}' : '/api/boards';
+            const uri = ( id ) ? `/api/boards/${id}` : '/api/boards';
+            // const uri = ( id ) ? '/api/boards/${id}' : '/api/boards';   백쿼트 키 고작 ` <- 이거때문에 삽질했음. 조심하기
             const method = (id) ? 'PATCH' : 'POST';
 
             fetch(uri, { //위 const 상수 설정으로 소스 수정됨. 0830
